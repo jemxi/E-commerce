@@ -564,49 +564,104 @@
                     <div class="address-grid">
                         <div class="form-group">
                             <label class="form-label">Region</label>
-                            <select class="form-select" required>
-                                <option value="">Select Region</option>
-                                <option value="ncr">National Capital Region (NCR)</option>
-                                <option value="region1">Region I (Ilocos Region)</option>
-                                <option value="region2">Region II (Cagayan Valley)</option>
-                                <option value="region3">Region III (Central Luzon)</option>
-                                <option value="region4a">Region IV-A (CALABARZON)</option>
-                            </select>
+                            <input type="text" class="form-control" value="Region 3" readonly required>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Province</label>
-                            <select class="form-select" required>
-                                <option value="">Select Province</option>
-                                <option value="metro-manila">Metro Manila</option>
-                                <option value="cavite">Cavite</option>
-                                <option value="laguna">Laguna</option>
-                                <option value="batangas">Batangas</option>
-                                <option value="rizal">Rizal</option>
-                            </select>
+                    </div>
+                    
+                        <div class="address-grid">
+                            <div class="form-group">
+                                <label class="form-label">Province</label>
+                                <input type="text" class="form-control" value="Nueva Ecija" readonly required>
+                            </div>
                         </div>
+                        
                     </div>
                     <div class="address-grid">
                         <div class="form-group">
                             <label class="form-label">City/Municipality</label>
-                            <select class="form-select" required>
-                                <option value="">Select City</option>
-                                <option value="makati">Makati</option>
-                                <option value="manila">Manila</option>
-                                <option value="quezon">Quezon City</option>
-                                <option value="taguig">Taguig</option>
-                                <option value="pasig">Pasig</option>
-                            </select>
+                            <input type="text" class="form-control" value="Guimba" readonly required>
                         </div>
+                    </div>
+                    
                         <div class="form-group">
                             <label class="form-label">Barangay</label>
                             <select class="form-select" required>
                                 <option value="">Select Barangay</option>
-                                <option value="brgy1">Barangay 1</option>
-                                <option value="brgy2">Barangay 2</option>
-                                <option value="brgy3">Barangay 3</option>
-                                <option value="brgy4">Barangay 4</option>
-                                <option value="brgy5">Barangay 5</option>
+                                <option value="brgy1">Agcano</option>
+                                <option value="brgy2">Bacayao</option>
+                                <option value="brgy3">Bagong Barrio</option>
+                                <option value="brgy4">Bagong Silang</option>
+                                <option value="brgy5">Balbalino</option>
+                                <option value="brgy6">Banitan</option>
+                                <option value="brgy7">Bantug</option>
+                                <option value="brgy8">Baybayabas</option>
+                                <option value="brgy9">Balingog East</option>
+                                <option value="brgy10">Balingog West</option>
+                                <option value="brgy11">Bunol</option>
+                                <option value="brgy12">Caballero</option>
+                                <option value="brgy13">Cabaruan</option>
+                                <option value="brgy14">Cabatuan</option>
+                                <option value="brgy15">Cabawangan</option>
+                                <option value="brgy16">Cabildo</option>
+                                <option value="brgy17">Cabuloan</option>
+                                <option value="brgy18">Caingin</option>
+                                <option value="brgy19">Calem</option>
+                                <option value="brgy20">Cardona</option>
+                                <option value="brgy21">Casulucan Este</option>
+                                <option value="brgy22">Casulucan Poblacion</option>
+                                <option value="brgy23">Catimon</option>
+                                <option value="brgy24">Cayusan</option>
+                                <option value="brgy25">Cawayan Bugtong</option>
+                                <option value="brgy26">Cawayang Ginto</option>
+                                <option value="brg27">Cinense</option>
+                                <option value="brgy28">Consuelo</option>
+                                <option value="brgy29">Cruz</option>
+                                <option value="brgy30">Curva</option>
+                                <option value="brgy31">De Vera</option>
+                                <option value="brgy32">Del Carmen</option>
+                                <option value="brgy33">Galvan</option>
+                                <option value="brgy34">Lamorito</option>
+                                <option value="brgy35">Lennec</option>
+                                <option value="brgy36">Macamias</option>
+                                <option value="brgy37">Maligaya</option>
+                                <option value="brgy38">Manggang Marikit</option>
+                                <option value="brgy39">Mapangpang</option>
+                                <option value="brgy40">Maybubon</option>
+                                <option value="brgy41">Naglabrahan</option>
+                                <option value="brgy42">Nagpandayan</option>
+                                <option value="brgy43">Narvacan</option>
+                                <option value="brgy44">Pacac</option>
+                                <option value="brgy45">Pandalla</option>
+                                <option value="brgy46">Pangatian</option>
+                                <option value="brgy47">Cinense</option>
+                                <option value="brgy48">Pasong Intsik</option>
+                                <option value="brgy49">Pasong Callos</option>
+                                <option value="brgy50">Poblacion District 1</option>
+                                <option value="brgy51">Poblacion District 2</option>
+                                <option value="brgy52">Poblacion District 3</option>
+                                <option value="brgy53">Poblacion District 4</option>
+                                <option value="brgy54">Poblacion District 5</option>
+                                <option value="brgy55">Pulong Singkamas</option>
+                                <option value="brgy56">San Andres</option>
+                                <option value="brgy57">San Bernardino</option>
+                                <option value="brgy58">San Marcelino</option>
+                                <option value="brgy59">San Miguel</option>
+                                <option value="brgy60">Santa Cruz</option>
+                                <option value="brgy61">Santa Lucia</option>
+                                <option value="brgy62">Santa Veronica</option>
+                                <option value="brgy63">Santo Cristo</option>
+                                <option value="brgy64">Santo Rosario</option>
+                                <option value="brgy65">Sinulatan</option>
+                                <option value="brgy66">Tampac</option>
+                                <option value="brgy67">Tampac I</option>
+                                <option value="brgy68">Tampac II</option>
+                                <option value="brgy69">Triala</option>
+                                <option value="brgy70">Ungab</option>
+                                <option value="brgy71">Yuson</option>
+                                <option value="brgy72">Triala</option>
                             </select>
+                            </select>
+
                         </div>
                     </div>
                     <div class="form-group">
