@@ -265,19 +265,29 @@ $event_categories = getEventCategories();
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <h1 class="text-3xl font-bold mb-4 md:mb-0">Wastewise E-commerce</h1>
-                <form action="" method="GET" class="flex items-center">
-                <input type="text" name="search" placeholder="Search products..." value="<?= htmlspecialchars($search) ?>" class="px-4 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-800">
-                      <select name="category" class="px-4 py-2 rounded-1-1g focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-800">
-                          <option value="">All Categories</option>
-                          <?php foreach ($categories as $cat): ?>
-                              <option value="<?= $cat ?>" <?= $category === $cat ? 'selected' : '' ?>><?= $cat ?></option>
-                          <?php endforeach; ?>
-                      </select>
-                      <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-r-lg hover:bg-green-500 transition duration-300">Search</button>
-                  </form>
-              </div>
-          </div>
-      </header>
+                <div class="flex flex-col md:flex-row gap-4 items-center w-full md:w-auto">
+                    <!-- Search Bar -->
+                    <form action="" method="GET" class="flex items-center w-full md:w-auto">
+                        <input type="text" name="search" placeholder="Search products..." value="<?= htmlspecialchars($search) ?>" class="px-4 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-800 w-full md:w-auto">
+                        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-r-lg hover:bg-green-500 transition duration-300">Search</button>
+                    </form>
+                    <!-- Categories -->
+                    <body class="bg-gray-100 font-sans">
+
+                    <!-- Categories Dropdown -->
+                    <form id="categoryForm" action="" method="GET" class="flex items-center w-full md:w-auto">
+                        <select id="categorySelect" name="category" class="px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-800 w-full md:w-auto">
+                            <option value="">All Categories</option>
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?= $cat ?>" <?= $category === $cat ? 'selected' : '' ?>><?= $cat ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+
 
 
     <!-- Sidebar Toggle Button -->
@@ -577,27 +587,90 @@ $event_categories = getEventCategories();
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-            function showSection(sectionId) {
-          document.getElementById('regular-products').style.display = sectionId === 'home' ? 'block' : 'none';
-          document.getElementById('christmas-products').style.display = sectionId === 'home' ? 'block' : 'none';
-          document.getElementById('notifications').style.display = sectionId === 'notifications' ? 'block' : 'none';
-      }
+       // Add event listener for real-time dropdown changes
+       document.getElementById('categorySelect').addEventListener('change', function () {
+            // Automatically submit the form when the category changes
+            document.getElementById('categoryForm').submit();
+        });
 
-      function addToCart(productId) {
-          // Send AJAX request to add item to cart
-          fetch('add_to_cart.php', {
+
+
+    function showSection(sectionId) {
+        document.getElementById('regular-products').style.display = sectionId === 'home' ? 'block' : 'none';
+        document.getElementById('christmas-products').style.display = sectionId === 'home' ? 'block' : 'none';
+        document.getElementById('my_orders').style.display = sectionId === 'my_orders' ? 'block' : 'none';
+        }
+
+    let currentProductId = null;
+
+    function addToCart(productId) {
+        currentProductId = productId;
+        document.getElementById('quantity-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('add-to-cart-btn').addEventListener('click', function() {
+        const quantity = document.getElementById('quantity-input').value;
+        
+        // Show loading state
+        this.disabled = true;
+        this.innerHTML = 'Adding...';
+        
+        // AJAX request to add item to cart
+        fetch('add_to_cart.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `product_id=${currentProductId}&quantity=${quantity}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Reset button state
+            this.disabled = false;
+            this.innerHTML = 'Add to Cart';
+            
+            if (data.success) {
+                document.getElementById('quantity-modal').classList.add('hidden');
+                document.getElementById('success-modal').classList.remove('hidden');
+            } else{
+                alert(data.message || 'Failed to add item to cart. Please try again.');
+            }
+        })
+        .catch(error => {
+            // Reset button state
+            this.disabled = false;
+            this.innerHTML = 'Add to Cart';
+            
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+
+    document.getElementById('close-modal').addEventListener('click', function() {
+        document.getElementById('quantity-modal').classList.add('hidden');
+    });
+
+    document.getElementById('close-success-modal').addEventListener('click', function() {
+        document.getElementById('success-modal').classList.add('hidden');
+    });
+
+    function cancelOrder(orderId) {
+      if (confirm('Are you sure you want to cancel this order?')) {
+          // Send AJAX request to cancel the order
+          fetch('cancel_order.php', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/x-www-form-urlencoded',
               },
-              body: `product_id=${productId}&quantity=1`
+              body: `order_id=${orderId}`
           })
           .then(response => response.json())
           .then(data => {
               if (data.success) {
-                  alert('Product added to cart successfully');
+                  alert('Order cancelled successfully');
+                  location.reload(); // Reload the page to reflect the changes
               } else {
-                  alert('Failed to add product to cart. Please try again.');
+                  alert('Failed to cancel the order. Please try again.');
               }
           })
           .catch(error => {
@@ -605,90 +678,51 @@ $event_categories = getEventCategories();
               alert('An error occurred. Please try again.');
           });
       }
+  }
 
-      function cancelOrder(orderId) {
-        if (confirm('Are you sure you want to cancel this order?')) {
-            // Send AJAX request to cancel the order
-            fetch('cancel_order.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `order_id=${orderId}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Order cancelled successfully');
-                    location.reload(); // Reload the page to reflect the changes
-                } else {
-                    alert('Failed to cancel the order. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            });
-        }
-    }
+  function switchTab(tabId) {
+      // Update tab buttons
+      document.querySelectorAll('.tab-button').forEach(button => {
+          if (button.dataset.tab === tabId) {
+              button.classList.remove('border-transparent', 'text-gray-500');
+              button.classList.add('border-green-500', 'text-green-600');
+          } else {
+              button.classList.remove('border-green-500', 'text-green-600');
+              button.classList.add('border-transparent', 'text-gray-500');
+          }
+      });
 
-    function switchTab(tabId) {
-        // Update tab buttons
-        document.querySelectorAll('.tab-button').forEach(button => {
-            if (button.dataset.tab === tabId) {
-                button.classList.remove('border-transparent', 'text-gray-500');
-                button.classList.add('border-green-500', 'text-green-600');
-            } else {
-                button.classList.remove('border-green-500', 'text-green-600');
-                button.classList.add('border-transparent', 'text-gray-500');
-            }
-        });
+      // Show/hide order sections
+      document.querySelectorAll('.order-section').forEach(section => {
+          section.classList.toggle('hidden', section.id !== `${tabId}-orders`);
+      });
+  }
 
-        // Show/hide order sections
-        document.querySelectorAll('.order-section').forEach(section => {
-            section.classList.toggle('hidden', section.id !== `${tabId}-orders`);
-        });
-    }
-
-    function requestReturn(orderId) {
-        if (confirm('Are you sure you want to request a return for this order?')) {
-            fetch('request_return.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `order_id=${orderId}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Return request submitted successfully');
-                    location.reload();
-                } else {
-                    alert(data.message || 'Failed to submit return request. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            });
-        }
-    }
-
-    function buyProduct(productId, price, name) {
-         const quantity = prompt(`Enter quantity for ${name}:`, "1");
-         if (quantity !== null && quantity.trim() !== "" && !isNaN(quantity) && parseInt(quantity) > 0) {
-             const total = price * parseInt(quantity);
-             if (confirm(`Total for ${quantity} ${name}(s): ₱${total.toFixed(2)}\nProceed to checkout?`)) {
-                 window.location.href = `proceed_checkout.php?product_id=${productId}&quantity=${quantity}`;
-             }
-         } else if (quantity !== null) {
-             alert("Please enter a valid quantity.");
-         }
-     }
-
-
-        function toggleSidebar() {
+  function requestReturn(orderId) {
+      if (confirm('Are you sure you want to request a return for this order?')) {
+          fetch('request_return.php', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: `order_id=${orderId}`
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  alert('Return request submitted successfully');
+                  location.reload();
+              } else {
+                  alert(data.message || 'Failed to submit return request. Please try again.');
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('An error occurred. Please try again.');
+          });
+      }
+  }
+  function toggleSidebar() {
             document.body.classList.toggle('sidebar-open');
         }
 
