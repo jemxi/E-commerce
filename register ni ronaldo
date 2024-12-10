@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = "Please provide a valid email address.";
     } elseif (strpos($email, $username) === false) { // Check if username is part of the email
         $error = "The email address must contain the username.";
+    } elseif (!preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password)) { // Password validation
+        $error = "Password must contain uppercase and lowercase letter.";
     } elseif ($password !== $confirm_password) {
         $error = "Passwords do not match.";
     } else {
@@ -54,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
