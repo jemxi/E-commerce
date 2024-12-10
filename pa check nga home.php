@@ -595,82 +595,27 @@ $event_categories = getEventCategories();
 
 
 
-    function showSection(sectionId) {
-        document.getElementById('regular-products').style.display = sectionId === 'home' ? 'block' : 'none';
-        document.getElementById('christmas-products').style.display = sectionId === 'home' ? 'block' : 'none';
-        document.getElementById('my_orders').style.display = sectionId === 'my_orders' ? 'block' : 'none';
-        }
+        function showSection(sectionId) {
+          document.getElementById('regular-products').style.display = sectionId === 'home' ? 'block' : 'none';
+          document.getElementById('christmas-products').style.display = sectionId === 'home' ? 'block' : 'none';
+          document.getElementById('notifications').style.display = sectionId === 'notifications' ? 'block' : 'none';
+      }
 
-    let currentProductId = null;
-
-    function addToCart(productId) {
-        currentProductId = productId;
-        document.getElementById('quantity-modal').classList.remove('hidden');
-    }
-
-    document.getElementById('add-to-cart-btn').addEventListener('click', function() {
-        const quantity = document.getElementById('quantity-input').value;
-        
-        // Show loading state
-        this.disabled = true;
-        this.innerHTML = 'Adding...';
-        
-        // AJAX request to add item to cart
-        fetch('add_to_cart.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `product_id=${currentProductId}&quantity=${quantity}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Reset button state
-            this.disabled = false;
-            this.innerHTML = 'Add to Cart';
-            
-            if (data.success) {
-                document.getElementById('quantity-modal').classList.add('hidden');
-                document.getElementById('success-modal').classList.remove('hidden');
-            } else{
-                alert(data.message || 'Failed to add item to cart. Please try again.');
-            }
-        })
-        .catch(error => {
-            // Reset button state
-            this.disabled = false;
-            this.innerHTML = 'Add to Cart';
-            
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
-        });
-    });
-
-    document.getElementById('close-modal').addEventListener('click', function() {
-        document.getElementById('quantity-modal').classList.add('hidden');
-    });
-
-    document.getElementById('close-success-modal').addEventListener('click', function() {
-        document.getElementById('success-modal').classList.add('hidden');
-    });
-
-    function cancelOrder(orderId) {
-      if (confirm('Are you sure you want to cancel this order?')) {
-          // Send AJAX request to cancel the order
-          fetch('cancel_order.php', {
+      function addToCart(productId) {
+          // Send AJAX request to add item to cart
+          fetch('add_to_cart.php', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/x-www-form-urlencoded',
               },
-              body: `order_id=${orderId}`
+              body: `product_id=${productId}&quantity=1`
           })
           .then(response => response.json())
           .then(data => {
               if (data.success) {
-                  alert('Order cancelled successfully');
-                  location.reload(); // Reload the page to reflect the changes
+                  alert('Product added to cart successfully');
               } else {
-                  alert('Failed to cancel the order. Please try again.');
+                  alert('Failed to add product to cart. Please try again.');
               }
           })
           .catch(error => {
@@ -678,51 +623,90 @@ $event_categories = getEventCategories();
               alert('An error occurred. Please try again.');
           });
       }
-  }
 
-  function switchTab(tabId) {
-      // Update tab buttons
-      document.querySelectorAll('.tab-button').forEach(button => {
-          if (button.dataset.tab === tabId) {
-              button.classList.remove('border-transparent', 'text-gray-500');
-              button.classList.add('border-green-500', 'text-green-600');
-          } else {
-              button.classList.remove('border-green-500', 'text-green-600');
-              button.classList.add('border-transparent', 'text-gray-500');
-          }
-      });
+      function cancelOrder(orderId) {
+        if (confirm('Are you sure you want to cancel this order?')) {
+            // Send AJAX request to cancel the order
+            fetch('cancel_order.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `order_id=${orderId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order cancelled successfully');
+                    location.reload(); // Reload the page to reflect the changes
+                } else {
+                    alert('Failed to cancel the order. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        }
+    }
 
-      // Show/hide order sections
-      document.querySelectorAll('.order-section').forEach(section => {
-          section.classList.toggle('hidden', section.id !== `${tabId}-orders`);
-      });
-  }
+    function switchTab(tabId) {
+        // Update tab buttons
+        document.querySelectorAll('.tab-button').forEach(button => {
+            if (button.dataset.tab === tabId) {
+                button.classList.remove('border-transparent', 'text-gray-500');
+                button.classList.add('border-green-500', 'text-green-600');
+            } else {
+                button.classList.remove('border-green-500', 'text-green-600');
+                button.classList.add('border-transparent', 'text-gray-500');
+            }
+        });
 
-  function requestReturn(orderId) {
-      if (confirm('Are you sure you want to request a return for this order?')) {
-          fetch('request_return.php', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              body: `order_id=${orderId}`
-          })
-          .then(response => response.json())
-          .then(data => {
-              if (data.success) {
-                  alert('Return request submitted successfully');
-                  location.reload();
-              } else {
-                  alert(data.message || 'Failed to submit return request. Please try again.');
-              }
-          })
-          .catch(error => {
-              console.error('Error:', error);
-              alert('An error occurred. Please try again.');
-          });
-      }
-  }
-  function toggleSidebar() {
+        // Show/hide order sections
+        document.querySelectorAll('.order-section').forEach(section => {
+            section.classList.toggle('hidden', section.id !== `${tabId}-orders`);
+        });
+    }
+
+    function requestReturn(orderId) {
+        if (confirm('Are you sure you want to request a return for this order?')) {
+            fetch('request_return.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `order_id=${orderId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Return request submitted successfully');
+                    location.reload();
+                } else {
+                    alert(data.message || 'Failed to submit return request. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        }
+    }
+
+    function buyProduct(productId, price, name) {
+         const quantity = prompt(`Enter quantity for ${name}:`, "1");
+         if (quantity !== null && quantity.trim() !== "" && !isNaN(quantity) && parseInt(quantity) > 0) {
+             const total = price * parseInt(quantity);
+             if (confirm(`Total for ${quantity} ${name}(s): ₱${total.toFixed(2)}\nProceed to checkout?`)) {
+                 window.location.href = `proceed_checkout.php?product_id=${productId}&quantity=${quantity}`;
+             }
+         } else if (quantity !== null) {
+             alert("Please enter a valid quantity.");
+         }
+     }
+
+
+        function toggleSidebar() {
             document.body.classList.toggle('sidebar-open');
         }
 
